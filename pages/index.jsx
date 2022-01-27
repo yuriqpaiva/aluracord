@@ -1,39 +1,9 @@
 import { Box, Text, TextField, Button, Image } from '@skynexui/components';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import appConfig from '../config.json';
-// Componente React
-// Componente para aplicar estilo Global / Reset
-function GlobalStyle() {
-  return (
-    // Declaramos um atributo a mais na tag style. global jsx
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-      /* App fit Height */
-      html,
-      body,
-      #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */
-    `}</style>
-  );
-}
 
+// Componente React
 function Title(props) {
   // Criando uma variável Tag para que possamos utilizar
   // qualquer nomeclatura, sem perder a semântica do HTML
@@ -67,11 +37,15 @@ function Title(props) {
 // }
 
 export default function PaginaInicial() {
-  const username = 'yuriqpaiva';
+  // const username = 'yuriqpaiva';
+  const [username, setUsername] = useState('yuriqpaiva');
+  const isUserValid = username.length >= 2;
+  const router = useRouter();
+
+  console.log(router);
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: 'flex',
@@ -106,6 +80,11 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              router.push('/chat');
+              // console.log('Alguém submeteu o form');
+            }}
             styleSheet={{
               display: 'flex',
               flexDirection: 'column',
@@ -136,6 +115,10 @@ export default function PaginaInicial() {
                   mainColorHighlight: appConfig.theme.colors.primary[500],
                   backgroundColor: appConfig.theme.colors.neutrals[800],
                 },
+              }}
+              onChange={(event) => {
+                console.log(event);
+                setUsername(event.target.value);
               }}
             />
             <Button
@@ -168,13 +151,23 @@ export default function PaginaInicial() {
               minHeight: '240px',
             }}
           >
-            <Image
-              styleSheet={{
-                borderRadius: '50%',
-                marginBottom: '16px',
-              }}
-              src={`https://github.com/${username}.png`}
-            />
+            {isUserValid ? (
+              <Image
+                styleSheet={{
+                  borderRadius: '50%',
+                  marginBottom: '16px',
+                }}
+                src={`https://github.com/${username}.png`}
+              />
+            ) : (
+              <Image
+                styleSheet={{
+                  borderRadius: '50%',
+                  marginBottom: '16px',
+                }}
+                src={`./images/sad-face.png`}
+              />
+            )}
             <Text
               variant="body4"
               styleSheet={{
@@ -184,7 +177,7 @@ export default function PaginaInicial() {
                 borderRadius: '1000px',
               }}
             >
-              {username}
+              {isUserValid ? username : 'Ops! Usuário inválido'}
             </Text>
           </Box>
           {/* Photo Area */}
