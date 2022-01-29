@@ -42,8 +42,6 @@ export default function PaginaInicial() {
   const isUserValid = username.length >= 2;
   const router = useRouter();
 
-  console.log(router);
-
   return (
     <>
       <Box
@@ -82,8 +80,7 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={(event) => {
               event.preventDefault();
-              router.push('/chat');
-              // console.log('Alguém submeteu o form');
+              router.push(`/chat?username=${username}`);
             }}
             styleSheet={{
               display: 'flex',
